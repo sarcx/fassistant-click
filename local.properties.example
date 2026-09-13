@@ -1,0 +1,15 @@
+# Copy to local.properties and fill in. That file is gitignored on purpose: the signing key is
+# exactly what installed copies use to decide an update is genuine.
+
+sdk.dir=/path/to/android/sdk
+
+# Only needed to build an APK that can upgrade an installed copy in place. Without these the
+# build still works, signed with the local debug key.
+fclick.keystore=/path/outside/this/repo/fassistant-click.jks
+fclick.keystorePassword=
+fclick.keyAlias=
+fclick.keyPassword=
+
+# Where the built app looks for its own updates. CI sets this to the repository's latest
+# release. Empty switches self-update off.
+fclick.updateUrl=

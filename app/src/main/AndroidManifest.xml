@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- The floating panel and the tap-point markers are overlay windows. Without this there is
+         no way to aim, so the app is inert but still installs and runs. -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+
+    <!-- Self-update: one configurable URL, nothing else leaves the phone. -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+
+    <application
+        android:allowBackup="false"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@android:style/Theme.DeviceDefault.Light.DarkActionBar">
+
+        <activity
+            android:name=".ui.MainActivity"
+            android:exported="true"
+            android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".ui.ScriptsActivity"
+            android:exported="false"
+            android:label="@string/scripts_title"
+            android:parentActivityName=".ui.MainActivity" />
+
+        <activity
+            android:name=".ui.ScriptEditorActivity"
+            android:exported="false"
+            android:parentActivityName=".ui.ScriptsActivity" />
+
+        <activity
+            android:name=".ui.StepEditorActivity"
+            android:exported="false"
+            android:parentActivityName=".ui.ScriptEditorActivity" />
+
+        <activity
+            android:name=".ui.SettingsActivity"
+            android:exported="false"
+            android:label="@string/settings_title"
+            android:parentActivityName=".ui.MainActivity" />
+
+        <activity
+            android:name=".ui.UpdateActivity"
+            android:exported="false"
+            android:label="@string/update_title"
+            android:launchMode="singleTop"
+            android:parentActivityName=".ui.MainActivity" />
+
+        <!-- The only way to send a touch without root. Owns the panel and the markers too: it is
+             already a long-lived system-bound process, so a second service would buy nothing. -->
+        <service
+            android:name=".ClickService"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/click_service" />
+        </service>
+
+        <receiver
+            android:name=".StopReceiver"
+            android:exported="false" />
+
+        <receiver
+            android:name=".update.InstallResultReceiver"
+            android:exported="false" />
+
+    </application>
+
+</manifest>

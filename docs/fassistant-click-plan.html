@@ -1,0 +1,1050 @@
+<title>Building fassistant-click</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+  :root {
+    --paper: #f1f2f5;
+    --surface: #ffffff;
+    --surface-2: #e9ebf0;
+    --ink: #15171c;
+    --ink-2: #565c68;
+    --ink-3: #7d8492;
+    --line: #d5d8e0;
+    --line-2: #c2c6d1;
+    --accent: #0e767f;
+    --accent-2: #0a5b62;
+    --accent-soft: #dcecee;
+    --warn: #8c6210;
+    --warn-soft: #f6eeda;
+    --risk: #a1364a;
+    --risk-soft: #f7e2e5;
+    --ok: #2b7048;
+    --ok-soft: #e0efe6;
+    --code-bg: #eaecf1;
+    --code-ink: #22252c;
+
+    --display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+    --body: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+    --measure: 68ch;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #12141a;
+      --surface: #1a1d24;
+      --surface-2: #22262f;
+      --ink: #e5e8ee;
+      --ink-2: #9ba3b1;
+      --ink-3: #7c8492;
+      --line: #2b303a;
+      --line-2: #3a404c;
+      --accent: #48c3cd;
+      --accent-2: #6fd6de;
+      --accent-soft: #0f3136;
+      --warn: #d8a94f;
+      --warn-soft: #33290f;
+      --risk: #e58292;
+      --risk-soft: #36171d;
+      --ok: #63c58c;
+      --ok-soft: #14301f;
+      --code-bg: #0e1116;
+      --code-ink: #dce1e9;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --paper: #12141a;
+    --surface: #1a1d24;
+    --surface-2: #22262f;
+    --ink: #e5e8ee;
+    --ink-2: #9ba3b1;
+    --ink-3: #7c8492;
+    --line: #2b303a;
+    --line-2: #3a404c;
+    --accent: #48c3cd;
+    --accent-2: #6fd6de;
+    --accent-soft: #0f3136;
+    --warn: #d8a94f;
+    --warn-soft: #33290f;
+    --risk: #e58292;
+    --risk-soft: #36171d;
+    --ok: #63c58c;
+    --ok-soft: #14301f;
+    --code-bg: #0e1116;
+    --code-ink: #dce1e9;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 16px;
+    line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 62rem;
+    margin: 0 auto;
+    padding: 3.5rem 1.5rem 6rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+  }
+
+  p, ul, ol { max-width: var(--measure); }
+  p { margin: 0; }
+  ul, ol { margin: 0; padding-left: 1.35rem; }
+  li { margin-bottom: 0.4rem; }
+  li:last-child { margin-bottom: 0; }
+
+  .eyebrow {
+    font-family: var(--display);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin: 0;
+  }
+
+  h1 {
+    font-family: var(--display);
+    font-size: clamp(2rem, 5vw, 2.9rem);
+    font-weight: 700;
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+    margin: 0.35rem 0 0;
+    text-wrap: balance;
+  }
+
+  .standfirst {
+    font-size: 1.09rem;
+    color: var(--ink-2);
+    margin-top: 0.9rem;
+    max-width: 60ch;
+  }
+
+  h2 {
+    font-family: var(--display);
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin: 0;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--ink);
+    text-wrap: balance;
+  }
+
+  h3 {
+    font-family: var(--display);
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin: 0;
+    text-wrap: balance;
+  }
+
+  section { display: flex; flex-direction: column; gap: 1.1rem; }
+
+  header.masthead { border-bottom: 1px solid var(--line); padding-bottom: 2rem; }
+
+  /* ---- summary ---- */
+
+  .summary {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--accent);
+    padding: 1.6rem 1.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+  }
+  .summary p { max-width: 70ch; }
+
+  /* ---- pills ---- */
+
+  .pill {
+    display: inline-block;
+    font-family: var(--display);
+    font-size: 0.66rem;
+    font-weight: 600;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    padding: 0.16rem 0.5rem;
+    border-radius: 2px;
+    border: 1px solid;
+    white-space: nowrap;
+    vertical-align: 0.08em;
+  }
+  .p-check { color: var(--ok); background: var(--ok-soft); border-color: var(--ok); }
+  .p-probe { color: var(--warn); background: var(--warn-soft); border-color: var(--warn); }
+  .p-risk { color: var(--risk); background: var(--risk-soft); border-color: var(--risk); }
+  .p-pick { color: var(--accent); background: var(--accent-soft); border-color: var(--accent); }
+
+  .pill-row { display: flex; flex-wrap: wrap; gap: 0.55rem; align-items: center; }
+
+  /* ---- tables ---- */
+
+  .scroller { overflow-x: auto; border: 1px solid var(--line); background: var(--surface); }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    min-width: 34rem;
+    font-size: 0.9rem;
+  }
+  caption {
+    caption-side: bottom;
+    text-align: left;
+    color: var(--ink-3);
+    font-size: 0.82rem;
+    padding: 0.7rem 1rem 0;
+  }
+  th, td {
+    text-align: left;
+    padding: 0.7rem 1rem;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+  thead th {
+    font-family: var(--display);
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--line-2);
+    white-space: nowrap;
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  tr.chosen td { background: var(--accent-soft); }
+  tr.chosen td:first-child { box-shadow: inset 3px 0 0 var(--accent); }
+  td.num { font-family: var(--mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+  /* ---- code ---- */
+
+  pre {
+    margin: 0;
+    background: var(--code-bg);
+    border: 1px solid var(--line);
+    color: var(--code-ink);
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    line-height: 1.65;
+    padding: 1rem 1.15rem;
+    overflow-x: auto;
+    tab-size: 2;
+  }
+  code {
+    font-family: var(--mono);
+    font-size: 0.88em;
+    background: var(--code-bg);
+    padding: 0.08em 0.32em;
+    border-radius: 2px;
+  }
+  pre code { background: none; padding: 0; font-size: 1em; }
+  .cap {
+    font-family: var(--mono);
+    font-size: 0.74rem;
+    color: var(--ink-3);
+    margin-top: 0.4rem;
+  }
+  .snippet { display: flex; flex-direction: column; }
+  pre .hl { color: var(--accent); font-weight: 500; }
+  pre .cm { color: var(--ink-3); }
+
+  /* ---- figures ---- */
+
+  figure {
+    margin: 0;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    padding: 1.4rem 1.4rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+  }
+  figure .svgbox { overflow-x: auto; }
+  figure svg { display: block; max-width: 100%; height: auto; min-width: 30rem; color: var(--ink); }
+  figcaption { color: var(--ink-2); font-size: 0.88rem; max-width: 72ch; }
+  figcaption b { color: var(--ink); font-weight: 600; }
+
+  svg .bx { fill: var(--surface); stroke: currentColor; stroke-width: 1.25; }
+  svg .bx-a { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 1.5; }
+  svg .bx-r { fill: var(--risk-soft); stroke: var(--risk); stroke-width: 1.5; stroke-dasharray: 5 3; }
+  svg .bx-w { fill: var(--warn-soft); stroke: var(--warn); stroke-width: 1.5; }
+  svg .band { fill: none; stroke: var(--line-2); stroke-width: 1; stroke-dasharray: 4 4; }
+  svg .ln { stroke: currentColor; stroke-width: 1.4; fill: none; }
+  svg .ln-thin { stroke: var(--line-2); stroke-width: 1; fill: none; }
+  svg .t { fill: currentColor; font-family: "IBM Plex Sans", sans-serif; font-size: 13px; }
+  svg .t-b { fill: currentColor; font-family: "Archivo", sans-serif; font-size: 13.5px; font-weight: 600; }
+  svg .t-s { fill: var(--ink-2); font-family: "IBM Plex Sans", sans-serif; font-size: 11.5px; }
+  svg .t-m { fill: var(--accent); font-family: "IBM Plex Mono", monospace; font-size: 11px; }
+  svg .t-lbl { fill: var(--ink-3); font-family: "Archivo", sans-serif; font-size: 10px; font-weight: 600; letter-spacing: 0.11em; }
+  svg .bar { fill: var(--accent); }
+  svg .bar-2 { fill: var(--accent); opacity: 0.55; }
+
+  /* ---- milestones ---- */
+
+  .stones { display: flex; flex-direction: column; gap: 1px; background: var(--line); border: 1px solid var(--line); }
+  .stone {
+    background: var(--surface);
+    padding: 1.25rem 1.4rem;
+    display: grid;
+    grid-template-columns: 2.6rem 1fr;
+    gap: 0 1.1rem;
+    align-items: start;
+  }
+  .stone .n {
+    font-family: var(--display);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .stone .bd { display: flex; flex-direction: column; gap: 0.6rem; min-width: 0; }
+  .stone h3 { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: baseline; }
+  .stone p { max-width: 74ch; font-size: 0.94rem; }
+  .proof {
+    border-left: 2px solid var(--accent);
+    padding-left: 0.85rem;
+    font-size: 0.88rem;
+    color: var(--ink-2);
+  }
+  .proof b { font-family: var(--display); font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); display: block; }
+
+  /* ---- q&a ---- */
+
+  .qa { display: flex; flex-direction: column; gap: 1px; background: var(--line); border: 1px solid var(--line); }
+  .q { background: var(--surface); padding: 1.15rem 1.4rem; display: flex; flex-direction: column; gap: 0.5rem; }
+  .q p { font-size: 0.94rem; max-width: 74ch; }
+  .rec { font-size: 0.94rem; max-width: 74ch; }
+  .rec b { color: var(--accent); font-family: var(--display); font-weight: 600; }
+
+  details {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    padding: 0.85rem 1.15rem;
+  }
+  details[open] { padding-bottom: 1.15rem; }
+  summary {
+    cursor: pointer;
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 0.92rem;
+  }
+  summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  details > *:not(summary) { margin-top: 0.9rem; }
+
+  .note {
+    background: var(--warn-soft);
+    border: 1px solid var(--warn);
+    padding: 1rem 1.25rem;
+    font-size: 0.92rem;
+  }
+  .note p { max-width: 74ch; }
+  .note strong { color: var(--warn); }
+
+  footer.end {
+    border-top: 1px solid var(--line);
+    padding-top: 1.5rem;
+    color: var(--ink-3);
+    font-size: 0.85rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+
+  @media (max-width: 34rem) {
+    .stone { grid-template-columns: 1fr; gap: 0.6rem; }
+  }
+</style>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">Execution plan &middot; new repo</p>
+    <h1>Building fassistant-click</h1>
+    <p class="standfirst">An Android auto-clicker with Click Assistant's feature set, written from
+      scratch in the conventions of its sibling repo. Nine milestones, riskiest platform unknown
+      first.</p>
+  </header>
+
+  <div class="summary">
+    <p><b>What.</b> A sideloaded Android app that places tap points on the screen and drives them
+      itself: taps, straight and curved swipes, pinch and spread, multi&#8209;finger versions of all
+      of them, with per&#8209;point delay, hold time and repeat count, saved as named scripts. The
+      floating panel stays on top of whatever app you are using. No root.</p>
+    <p><b>How.</b> One mechanism does all of it —
+      <code>AccessibilityService.dispatchGesture()</code>. Every feature in the list above is a
+      different shape of <code>GestureDescription</code> handed to that one call. There is no
+      second path to synthetic touch without root, so the stack question answers itself: Kotlin,
+      no runtime dependencies, hand&#8209;rolled views — the same build as
+      <code>fassistant-android</code>, in its own repo with its own app id, signing key and
+      self&#8209;update URL.</p>
+    <p><b>The hard part is not the gestures, it is being allowed to send them.</b> Three permission
+      gates stand in front of the app, and on Android&nbsp;13 and later the accessibility gate is
+      deliberately hardened against exactly this kind of sideloaded app. Two questions about that
+      could not be settled from documentation, so milestone&nbsp;0 is a throwaway probe module that
+      answers them on the real phones before any real code is written — the same move
+      <code>fassistant-android</code> made with its own <code>probe/</code>.</p>
+    <div class="pill-row">
+      <span class="pill p-pick">Kotlin, zero deps</span>
+      <span class="pill p-pick">minSdk 24</span>
+      <span class="pill p-probe">2 unknowns, probe first</span>
+      <span class="pill p-risk">1 feature may not be buildable</span>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+
+  <section>
+    <h2>One call does everything</h2>
+
+    <p>Worth getting the shape of it before anything else, because it explains why the feature list
+      is cheaper than it looks and why the app has an awkward relationship with its own floating
+      panel.</p>
+
+    <figure>
+      <div class="svgbox">
+        <svg viewBox="0 0 880 492" role="img" aria-label="A dispatched gesture travels from the script through GestureDescription and the accessibility service into Android's input dispatcher, which delivers it as a real touch — so the app's own marker overlay receives it unless the marker window is flagged non-touchable.">
+          <defs>
+            <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M 0 1 L 9 5 L 0 9 z" fill="currentColor"></path>
+            </marker>
+          </defs>
+
+          <rect class="band" x="20" y="14" width="840" height="266" rx="3"></rect>
+          <text class="t-lbl" x="34" y="34">FASSISTANT-CLICK</text>
+
+          <rect class="bx" x="240" y="46" width="400" height="52" rx="3"></rect>
+          <text class="t-b" x="440" y="70" text-anchor="middle">Script</text>
+          <text class="t-s" x="440" y="87" text-anchor="middle">points, timings, gesture kinds</text>
+
+          <line class="ln" x1="440" y1="98" x2="440" y2="140" marker-end="url(#ar)"></line>
+          <text class="t-s" x="452" y="124">each finger becomes one StrokeDescription</text>
+
+          <rect class="bx" x="240" y="140" width="400" height="52" rx="3"></rect>
+          <text class="t-b" x="440" y="164" text-anchor="middle">GestureDescription</text>
+          <text class="t-s" x="440" y="181" text-anchor="middle">a Path, a start offset, a duration &mdash; per stroke</text>
+
+          <line class="ln" x1="440" y1="192" x2="440" y2="234" marker-end="url(#ar)"></line>
+          <text class="t-m" x="452" y="218">dispatchGesture()</text>
+
+          <rect class="bx-a" x="240" y="234" width="400" height="52" rx="3"></rect>
+          <text class="t-b" x="440" y="258" text-anchor="middle">ClickService</text>
+          <text class="t-s" x="440" y="275" text-anchor="middle">an AccessibilityService, canPerformGestures</text>
+
+          <line class="ln" x1="440" y1="290" x2="440" y2="332" marker-end="url(#ar)"></line>
+          <text class="t-s" x="452" y="316">injected as a real touch at (x,&nbsp;y)</text>
+
+          <rect class="bx" x="240" y="332" width="400" height="52" rx="3"></rect>
+          <text class="t-b" x="440" y="356" text-anchor="middle">Android input dispatcher</text>
+          <text class="t-s" x="440" y="373" text-anchor="middle">topmost touchable window at those coordinates wins</text>
+
+          <line class="ln" x1="430" y1="384" x2="240" y2="418" marker-end="url(#ar)"></line>
+          <line class="ln" x1="450" y1="384" x2="640" y2="418" marker-end="url(#ar)"></line>
+
+          <rect class="bx-r" x="60" y="420" width="340" height="64" rx="3"></rect>
+          <text class="t-b" x="230" y="444" text-anchor="middle">Our own marker overlay</text>
+          <text class="t-s" x="230" y="462" text-anchor="middle">eats the tap while it is touchable</text>
+          <text class="t-s" x="230" y="477" text-anchor="middle">&mdash; the run does nothing</text>
+
+          <rect class="bx-a" x="480" y="420" width="340" height="64" rx="3"></rect>
+          <text class="t-b" x="650" y="444" text-anchor="middle">The app you are automating</text>
+          <text class="t-m" x="650" y="463" text-anchor="middle">FLAG_NOT_TOUCHABLE on markers</text>
+          <text class="t-s" x="650" y="478" text-anchor="middle">for the length of the run</text>
+        </svg>
+      </div>
+      <figcaption><b>A dispatched gesture is a real touch, not a message to a chosen app.</b> It
+        goes to whichever window sits at those coordinates — including the app's own tap-point
+        markers, which by definition sit exactly there. So a marker is a draggable window while you
+        are editing and a non-touchable one for the length of a run, and the panel itself never
+        takes input focus. Getting this wrong is a silent failure: the run reports success and
+        nothing happens. <span class="pill p-probe">confirm in M0</span></figcaption>
+    </figure>
+
+    <p>The second consequence of the diagram is the good news. Because every gesture is the same
+      <code>GestureDescription</code> handed to the same call, the difference between a tap, a
+      500&nbsp;ms swipe, a two-finger pinch and a curved drag is entirely in how the strokes are
+      laid out in time and space. That is one builder, not five features.</p>
+
+    <figure>
+      <div class="svgbox">
+        <svg viewBox="0 0 880 366" role="img" aria-label="A timing diagram showing four gesture types as stroke bars on a shared millisecond axis: three repeated taps with a 300 millisecond delay between them, a single 400 millisecond swipe, a pinch drawn as two simultaneous strokes, and a curved swipe drawn as one 500 millisecond stroke.">
+          <defs>
+            <marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 1 L 9 5 L 0 9 z" fill="currentColor"></path>
+            </marker>
+          </defs>
+
+          <text class="t-lbl" x="0" y="20">ONE GESTURE KIND PER ROW &mdash; BARS ARE STROKES</text>
+
+          <line class="ln-thin" x1="240" y1="70" x2="394" y2="70" stroke-dasharray="4 3" marker-start="url(#ar2)" marker-end="url(#ar2)"></line>
+          <text class="t-s" x="317" y="58" text-anchor="middle">delay 300 ms</text>
+
+          <text class="t" x="188" y="75" text-anchor="end">Tap, repeated 3&times;</text>
+          <rect class="bar" x="205" y="60" width="32" height="20" rx="2"></rect>
+          <rect class="bar" x="397" y="60" width="32" height="20" rx="2"></rect>
+          <rect class="bar" x="589" y="60" width="32" height="20" rx="2"></rect>
+          <text class="t-s" x="205" y="97">hold 60 ms, path of zero length</text>
+
+          <text class="t" x="188" y="139" text-anchor="end">Swipe</text>
+          <rect class="bar" x="205" y="124" width="213" height="20" rx="2"></rect>
+          <text class="t-s" x="430" y="139">one stroke, straight path, 400 ms</text>
+
+          <text class="t" x="188" y="211" text-anchor="end">Pinch</text>
+          <rect class="bar" x="205" y="186" width="187" height="16" rx="2"></rect>
+          <rect class="bar-2" x="205" y="208" width="187" height="16" rx="2"></rect>
+          <text class="t-s" x="404" y="199">two strokes, same start time,</text>
+          <text class="t-s" x="404" y="215">paths converging</text>
+
+          <text class="t" x="188" y="281" text-anchor="end">Curved swipe</text>
+          <rect class="bar" x="205" y="266" width="267" height="20" rx="2"></rect>
+          <text class="t-s" x="484" y="281">still one stroke &mdash; the curve is in the Path</text>
+
+          <line class="ln" x1="205" y1="322" x2="845" y2="322"></line>
+          <line class="ln" x1="205" y1="322" x2="205" y2="328"></line>
+          <line class="ln" x1="365" y1="322" x2="365" y2="328"></line>
+          <line class="ln" x1="525" y1="322" x2="525" y2="328"></line>
+          <line class="ln" x1="685" y1="322" x2="685" y2="328"></line>
+          <line class="ln" x1="845" y1="322" x2="845" y2="328"></line>
+          <text class="t-s" x="205" y="344" text-anchor="middle">0</text>
+          <text class="t-s" x="365" y="344" text-anchor="middle">300</text>
+          <text class="t-s" x="525" y="344" text-anchor="middle">600</text>
+          <text class="t-s" x="685" y="344" text-anchor="middle">900</text>
+          <text class="t-s" x="845" y="344" text-anchor="middle">1200 ms</text>
+        </svg>
+      </div>
+      <figcaption><b>The whole feature list is stroke layout.</b> Repeat count is a queue of
+        gestures with a gap between them; hold time is a stroke's duration; a pinch is two strokes
+        that start together; a curve is a <code>Path</code> with a <code>quadTo()</code> in it.
+        Multi&#8209;finger anything is just more strokes in the same
+        <code>GestureDescription</code>, up to the ceiling the platform reports.</figcaption>
+    </figure>
+
+    <p>Those two ceilings — how many strokes one gesture may hold and how long it may last — are
+      read at runtime from <code>GestureDescription.getMaxStrokeCount()</code> and
+      <code>getMaxGestureDuration()</code> rather than hardcoded, matching the sibling repo's habit
+      of deciding platform facts on the phone. A run longer than the duration ceiling is split into
+      consecutive gestures; a gesture wanting more fingers than the phone allows is refused with a
+      message rather than silently truncated.</p>
+
+    <div class="note">
+      <p><strong>Continued gestures need Android 8.0.</strong> Holding a finger down across more
+        than one <code>Path</code> — an L&#8209;shaped drag, a swipe that pauses mid&#8209;stroke —
+        uses the <code>willContinue</code> flag on <code>StrokeDescription</code> and
+        <code>continueStroke()</code>, both API&nbsp;26. Below that the app offers single-path
+        gestures only. <span class="pill p-check">verified in the API docs</span></p>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+
+  <section>
+    <h2>Three gates before the first tap</h2>
+
+    <p>None of the code matters until the phone lets the service run. Each gate fails differently
+      and each has a different route through it, and the third one is where Android has
+      deliberately made life hard for a sideloaded app that asks for accessibility.</p>
+
+    <figure>
+      <div class="svgbox">
+        <svg viewBox="0 0 880 470" role="img" aria-label="Three sequential permission gates: the install target-SDK floor, the draw-over-other-apps permission, and the accessibility service grant. The third gate has two routes: writing the secure setting over adb, which sidesteps Android 13's restricted-settings dialog, or enabling it by hand in Settings, which does not.">
+          <defs>
+            <marker id="ar3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M 0 1 L 9 5 L 0 9 z" fill="currentColor"></path>
+            </marker>
+          </defs>
+
+          <rect class="bx" x="30" y="16" width="810" height="82" rx="3"></rect>
+          <text class="t-lbl" x="46" y="36">GATE 1</text>
+          <text class="t-b" x="112" y="37">Getting installed at all</text>
+          <text class="t-s" x="46" y="58">Android 15 and 16 refuse anything below targetSdk 24. This app sits at 25, one clear of the floor.</text>
+          <text class="t-m" x="46" y="82">adb install -r --bypass-low-target-sdk-block dist/fassistant-click.apk</text>
+
+          <line class="ln" x1="435" y1="98" x2="435" y2="126" marker-end="url(#ar3)"></line>
+
+          <rect class="bx" x="30" y="126" width="810" height="82" rx="3"></rect>
+          <text class="t-lbl" x="46" y="146">GATE 2</text>
+          <text class="t-b" x="112" y="147">Draw over other apps</text>
+          <text class="t-s" x="46" y="168">Without it there is no floating panel and no markers, so there is no way to aim. The app still runs.</text>
+          <text class="t-m" x="46" y="192">adb shell appops set dev.todor.fassistantclick SYSTEM_ALERT_WINDOW allow</text>
+
+          <line class="ln" x1="435" y1="208" x2="435" y2="236" marker-end="url(#ar3)"></line>
+
+          <rect class="bx-a" x="30" y="236" width="810" height="82" rx="3"></rect>
+          <text class="t-lbl" x="46" y="256">GATE 3</text>
+          <text class="t-b" x="112" y="257">The accessibility service</text>
+          <text class="t-s" x="46" y="278">Without it <tspan font-style="italic">nothing</tspan> works &mdash; this is the only way to send a touch. Two routes, and they differ.</text>
+          <text class="t-s" x="46" y="300">The panel can detect it is off and refuse to start, rather than reporting a run that never happened.</text>
+
+          <line class="ln" x1="235" y1="318" x2="225" y2="344" marker-end="url(#ar3)"></line>
+          <line class="ln" x1="635" y1="318" x2="645" y2="344" marker-end="url(#ar3)"></line>
+
+          <rect class="bx-a" x="30" y="346" width="390" height="106" rx="3"></rect>
+          <text class="t-b" x="46" y="370">Over adb &mdash; the route we use</text>
+          <text class="t-s" x="46" y="390">Writes the secure setting directly, so the</text>
+          <text class="t-s" x="46" y="406">restricted-settings dialog never appears.</text>
+          <text class="t-m" x="46" y="428">settings put secure \</text>
+          <text class="t-m" x="46" y="444">  enabled_accessibility_services &lt;pkg&gt;/.ClickService</text>
+
+          <rect class="bx-r" x="450" y="346" width="390" height="106" rx="3"></rect>
+          <text class="t-b" x="466" y="370">By hand in Settings</text>
+          <text class="t-s" x="466" y="390">On Android 13+ a sideloaded app is greyed out</text>
+          <text class="t-s" x="466" y="406">until: App info &rarr; &#8942; &rarr; Allow restricted</text>
+          <text class="t-s" x="466" y="422">settings. An adb-installed app may not even</text>
+          <text class="t-s" x="466" y="438">be listed &mdash; it can need a file-manager install.</text>
+        </svg>
+      </div>
+      <figcaption><b>The adb route is not a workaround, it is the supported route for a phone you
+        own.</b> Android&nbsp;13's restricted&#8209;settings gate exists because banking trojans
+        abuse accessibility, and it keys on how the app arrived rather than what it targets. Writing
+        <code>enabled_accessibility_services</code> directly is how every adb-provisioned
+        accessibility tool does it, and it is what <code>tools/setup-phone.sh</code> will do —
+        exactly as the sibling repo already does for its notification listener.
+        <span class="pill p-check">route verified</span></figcaption>
+    </figure>
+
+    <p>One thing the gate diagram cannot settle: whether an accessibility service declared by an
+      app targeting SDK&nbsp;25 is even <em>offered</em> in the Accessibility settings list on a
+      modern phone. Nothing in the documentation says the enumeration filters on target level, and
+      the adb route writes the setting without consulting that list at all — but the sibling repo
+      learned the hard way that a low <code>targetSdk</code> buys less than the docs imply, so this
+      goes to the probe rather than into an assumption.</p>
+  </section>
+
+  <!-- ============================================================ -->
+
+  <section>
+    <h2>Stack</h2>
+
+    <p>There is not much of a decision here, which is worth saying plainly rather than dressing up
+      as a trade-off study. Synthetic touch on an unrooted Android phone has exactly one public
+      API, that API is only reachable from an <code>AccessibilityService</code>, and an
+      accessibility service is Kotlin or Java. Everything else in the table is a way of not
+      building the app.</p>
+
+    <div class="scroller">
+      <table>
+        <thead>
+          <tr><th>Option</th><th>What it gets you</th><th>What it costs</th><th></th></tr>
+        </thead>
+        <tbody>
+          <tr class="chosen">
+            <td><b>Kotlin + <code>dispatchGesture</code></b></td>
+            <td>Every gesture in the feature list, on any unrooted phone from Android 7.0. Reads the
+              same as <code>fassistant-android</code>, so both repos are one codebase to hold in
+              your head.</td>
+            <td>The accessibility grant, and the Android 13+ dance around it.</td>
+            <td><span class="pill p-pick">pick</span></td>
+          </tr>
+          <tr>
+            <td>Flutter or React Native shell</td>
+            <td>Nothing the app needs. The overlay windows and the gesture dispatch both have to be
+              native anyway.</td>
+            <td>A framework and a runtime, to draw three settings screens. The sibling APK is
+              68&nbsp;KB; this would add roughly two orders of magnitude to that for no
+              capability.</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Root: <code>input tap</code> or <code>/dev/input</code></td>
+            <td>Exact coordinates, no accessibility grant, works on the lock screen and inside apps
+              that block accessibility.</td>
+            <td>A rooted phone. Neither phone in play is rooted, and rooting them to get an
+              auto-clicker is the tail wagging the dog.</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Drive it from a laptop over adb</td>
+            <td>Working today, in about four lines of shell.</td>
+            <td>A tethered laptop, and no app. Fine as a stopgap, not the thing being asked
+              for.</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>MacroDroid, Tasker + AutoInput</td>
+            <td>All of it, off the shelf, this afternoon.</td>
+            <td>Closed, paid, and not the ask. Worth naming so the decision is on the record.</td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+      <caption>The real choice is only whether to build it at all; given yes, the how is forced.</caption>
+    </div>
+
+    <h3>The numbers that follow from it</h3>
+
+    <div class="scroller">
+      <table>
+        <thead>
+          <tr><th>Setting</th><th>Value</th><th>Why</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>minSdk</code></td><td class="num">24</td>
+            <td>Not 23 like the sibling: <code>dispatchGesture</code> does not exist below Android
+              7.0, and it is the entire app. Continued strokes need 26 and degrade gracefully
+              below.</td></tr>
+          <tr><td><code>targetSdk</code></td><td class="num">25</td>
+            <td>Same as the sibling, and it still pays: no runtime notification permission, no
+              foreground-service type to declare, and the install floor is 24 so 25 clears it by
+              one. Costs nothing that the accessibility path needs, as far as the docs go —
+              <span class="pill p-probe">M0 checks this</span></td></tr>
+          <tr><td><code>compileSdk</code></td><td class="num">36</td>
+            <td>Build against current, opt out of behaviour changes via the target level. The
+              sibling's trick, unchanged.</td></tr>
+          <tr><td>Runtime dependencies</td><td class="num">0</td>
+            <td><code>android.useAndroidX=false</code>, programmatic views on
+              <code>Theme.DeviceDefault</code>, <code>Views.kt</code> copied across as the starting
+              point.</td></tr>
+          <tr><td>Application id</td><td colspan="2"><code>dev.todor.fassistantclick</code> —
+            deliberately not <code>dev.todor.fassistant.click</code>, which reads like a component
+            of the other app and would make every <code>appops</code> and <code>dumpsys</code> line
+            ambiguous between the two.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Where it lands</h3>
+
+    <div class="snippet">
+<pre><code>fassistant-click/
+├── app/src/main/
+│   ├── AndroidManifest.xml
+│   ├── kotlin/dev/todor/fassistantclick/
+│   │   ├── <span class="hl">ClickService.kt</span>        <span class="cm">the accessibility service — owns dispatchGesture</span>
+│   │   ├── Grants.kt              <span class="cm">which gates are open, and a deep link to each</span>
+│   │   ├── gesture/
+│   │   │   ├── Stroke.kt          <span class="cm">one finger: path, start offset, duration</span>
+│   │   │   ├── Builder.kt         <span class="cm">Script → GestureDescription, honouring runtime caps</span>
+│   │   │   └── Runner.kt          <span class="cm">queue, countdown, repeat, pause, stop</span>
+│   │   ├── script/
+│   │   │   ├── Script.kt          <span class="cm">points, gesture kinds, timings</span>
+│   │   │   └── Store.kt           <span class="cm">named scripts on disk</span>
+│   │   ├── overlay/
+│   │   │   ├── Panel.kt           <span class="cm">the floating control panel, never focusable</span>
+│   │   │   ├── Marker.kt          <span class="cm">one tap point — draggable, non-touchable on run</span>
+│   │   │   └── Capture.kt         <span class="cm">full-screen window for placing and recording points</span>
+│   │   └── ui/                    <span class="cm">MainActivity, ScriptsActivity, SettingsActivity, Views.kt</span>
+│   └── res/values/strings.xml     <span class="cm">every user-facing string, English only</span>
+├── <span class="hl">probe/</span>                         <span class="cm">throwaway — answers the four questions in M0</span>
+├── tools/setup-phone.sh           <span class="cm">clears all three gates over adb</span>
+├── dist/                          <span class="cm">apk + update.json, produced by :app:dist</span>
+├── gradle.properties              <span class="cm">VERSION_NAME / VERSION_CODE — single source of truth</span>
+└── .github/workflows/release.yml  <span class="cm">tag → sign → publish → prune older releases</span></code></pre>
+      <p class="cap">Structure mirrors fassistant-android/ so the two are navigable as a pair.</p>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+
+  <section>
+    <h2>The one feature that might not be buildable</h2>
+
+    <p>The original records a sequence of gestures you perform and plays it back. Recording
+      <em>coordinates</em> is easy — a full-screen capture window takes your taps and writes them
+      down. Recording a <em>live interaction with another app</em> is a different thing, because it
+      needs the touch to reach that app and to reach us, at the same time.</p>
+
+    <p>An accessibility service is given the semantic tree of the screen, not the raw touch stream.
+      I could not find a documented, non-root way for one to observe another app's touch
+      coordinates while those touches still land normally. That may exist and I have not found it,
+      or it may not exist; either way it is not something to guess at in a plan, so it is
+      a probe question with a fallback already designed.</p>
+
+    <div class="scroller">
+      <table>
+        <thead>
+          <tr><th>Shape</th><th>How it works</th><th>What you give up</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+          <tr class="chosen">
+            <td><b>Stepped capture</b></td>
+            <td>A full-screen transparent window takes your taps. Each one becomes a point, and the
+              real gap between them becomes that point's delay. You tap out the sequence, then
+              close the window and run it.</td>
+            <td>The app underneath does not react while you are recording, so you are tapping
+              against a static screen rather than following a live flow.</td>
+            <td><span class="pill p-pick">fallback, build this</span></td>
+          </tr>
+          <tr>
+            <td>Live observation</td>
+            <td>Watch real touches as they pass through to the target app, and record them without
+              swallowing them.</td>
+            <td>Nothing, if it turns out to be possible.</td>
+            <td><span class="pill p-probe">M0 question 4</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <caption>Stepped capture covers the common case — replaying a fixed sequence on a screen whose layout does not move — which is most of what recording is used for.</caption>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+
+  <section>
+    <h2>Milestones</h2>
+
+    <p>Ordered so the thing most likely to invalidate the plan is settled first, and so every
+      milestone after that is a slice you can actually run. Nothing here builds UI for a capability
+      that has not already been proven on a phone.</p>
+
+    <div class="stones">
+
+      <div class="stone">
+        <div class="n">0</div>
+        <div class="bd">
+          <h3>The probe <span class="pill p-probe">answers 4 unknowns</span></h3>
+          <p>A throwaway second module, exactly like the sibling's <code>probe/</code>: a single
+            screen that runs the four checks the documentation would not settle and prints what it
+            found. Install it on the old OnePlus and on a phone running Android 13 or later, because
+            the interesting answers differ between them.</p>
+          <ol>
+            <li>Is a targetSdk&nbsp;25 accessibility service listed and enableable in Accessibility
+              settings on a modern phone?</li>
+            <li>Does writing <code>enabled_accessibility_services</code> over adb turn it on
+              without the restricted-settings dialog?</li>
+            <li>What do <code>getMaxStrokeCount()</code> and <code>getMaxGestureDuration()</code>
+              actually return here?</li>
+            <li>Does a dispatched tap land on our own touchable overlay, and does
+              <code>FLAG_NOT_TOUCHABLE</code> hand it through to the app underneath? Is there any
+              way to observe a real touch without swallowing it?</li>
+          </ol>
+          <div class="proof"><b>How you know</b>Four answers on screen, written into
+            <code>CHANGELOG.md</code> the way the sibling recorded its own findings. If question 1
+            comes back no, <code>targetSdk</code> goes up before a line of the app is written —
+            which is the entire point of doing this first.</div>
+        </div>
+      </div>
+
+      <div class="stone">
+        <div class="n">1</div>
+        <div class="bd">
+          <h3>One hardcoded tap</h3>
+          <p>The thinnest possible end-to-end slice: an accessibility service with
+            <code>canPerformGestures</code>, and one hardcoded tap at the middle of the screen fired
+            on a five-second timer. No panel, no markers, no settings, no UI at all.</p>
+          <div class="proof"><b>How you know</b>Open the calculator, leave the phone alone, and
+            watch a digit press itself. <code>adb logcat -s fclick</code> shows the
+            <code>GestureResultCallback</code> reporting completion rather than cancellation —
+            worth distinguishing, because a cancelled gesture is what a blocked dispatch looks
+            like.</div>
+        </div>
+      </div>
+
+      <div class="stone">
+        <div class="n">2</div>
+        <div class="bd">
+          <h3>Panel and markers <span class="pill p-risk">the overlay trap</span></h3>
+          <p>The floating panel and one draggable marker, both overlay windows. The panel is never
+            focusable, so the app underneath keeps input focus. The marker is touchable while you
+            drag it and non-touchable for the length of a run. Start and stop buttons on the panel.</p>
+          <div class="proof"><b>How you know</b>Drag the marker over a link in Chrome and hit start
+            — the link opens. <code>adb shell dumpsys window | grep fassistantclick</code> shows the
+            marker's flags flipping when the run begins and back when it ends.</div>
+        </div>
+      </div>
+
+      <div class="stone">
+        <div class="n">3</div>
+        <div class="bd">
+          <h3>The timing engine</h3>
+          <p>Delay before, hold duration, repeat count, and an infinite mode. A countdown before the
+            first gesture. Pause, resume and stop mid-run. A foreground service owns the run so it
+            is not killed halfway, and its notification is the way to stop a run when the panel is
+            in the way.</p>
+          <div class="proof"><b>How you know</b>Point it at a tally-counter app, ask for 100
+            repeats at 200&nbsp;ms, and read 100 off the screen. Logcat timestamps show the actual
+            interval, which is what tells you whether the gap needs to be scheduled rather than
+            slept.</div>
+        </div>
+      </div>
+
+      <div class="stone">
+        <div class="n">4</div>
+        <div class="bd">
+          <h3>Every gesture kind</h3>
+          <p>Swipe, curved swipe, pinch, spread, and multi-finger versions of all of them, plus
+            several points in one script. The builder reads the two runtime ceilings and splits or
+            refuses accordingly. Continued strokes on API&nbsp;26 and up; single-path only below.</p>
+          <div class="proof"><b>How you know</b>A pinch zooms Google Maps out. A curved swipe draws
+            a visible curve in a sketch app. Asking for more fingers than the phone allows produces
+            a message naming the limit, not a crash and not a truncated gesture.</div>
+        </div>
+      </div>
+
+      <div class="stone">
+        <div class="n">5</div>
+        <div class="bd">
+          <h3>Saved scripts</h3>
+          <p>Name a script, save it, list them, load one, delete one. Plain files in the app's own
+            storage — no database, matching the sibling's approach to its watchlist.</p>
+          <div class="proof"><b>How you know</b>Save a five-point script, force-stop the app with
+            <code>adb shell am force-stop</code>, reopen, load it, run it, get the same result.</div>
+        </div>
+      </div>
+
+      <div class="stone">
+        <div class="n">6</div>
+        <div class="bd">
+          <h3>Recording</h3>
+          <p>Whichever shape milestone 0 says is possible. Stepped capture unless it found a way to
+            watch touches pass through.</p>
+          <div class="proof"><b>How you know</b>Record five taps across the calculator keypad,
+            replay, and get the same five digits in the same order with the same rhythm.</div>
+        </div>
+      </div>
+
+      <div class="stone">
+        <div class="n">7</div>
+        <div class="bd">
+          <h3>Setup and polish</h3>
+          <p>Panel size and opacity, because it sits on top of the app you are trying to use. A
+            first-run screen showing the three gates with a live open-or-closed state and a deep
+            link to each — the sibling already has this pattern in its permissions screen.
+            <code>tools/setup-phone.sh</code> clears all three over adb.</p>
+          <div class="proof"><b>How you know</b><code>tools/setup-phone.sh</code> on a phone that
+            has never seen the app gets to a working run without a trip into Settings that the
+            script did not tell you about.</div>
+        </div>
+      </div>
+
+      <div class="stone">
+        <div class="n">8</div>
+        <div class="bd">
+          <h3>Release plumbing</h3>
+          <p>Its own signing key, the <code>dist</code> task producing a versioned APK plus a stable
+            filename plus <code>update.json</code>, the tag-triggered workflow, and the self-update
+            check pointed at this repo's latest release. All four are lifted from
+            <code>fassistant-android</code> with the names changed.</p>
+          <div class="proof"><b>How you know</b><code>git tag v0.1.0</code> produces a release
+            carrying an APK and a manifest, <code>apksigner verify --print-certs</code> shows the
+            new key, and an installed 0.1.0 offers 0.2.0 when it appears.</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+
+  <section>
+    <h2>Open questions</h2>
+
+    <div class="qa">
+
+      <div class="q">
+        <h3>1. Does a run need to survive the screen going off?</h3>
+        <p>A long unattended run is the obvious use, and it is also the case where Doze and the
+          screen state get in the way. The sibling repo has a whole architecture for staying alive
+          through this; copying it here would be a lot of machinery.</p>
+        <p class="rec"><b>Recommend:</b> no. A gesture dispatched at a dark, locked screen does not
+          do anything useful, so the honest behaviour is a foreground service that keeps the run
+          alive while the screen is on and a wake lock held only for the length of a run. If long
+          unattended runs turn out to matter, that is a later milestone with its own probe, not
+          something to build on spec.</p>
+      </div>
+
+      <div class="q">
+        <h3>2. New signing key, or share fassistant's?</h3>
+        <p>Nothing forces them apart — the app ids differ, so one key could sign both. The existing
+          key sits in <code>~/Sites/.fassistant-signing/fassistant.jks</code>.</p>
+        <p class="rec"><b>Recommend:</b> a new key,
+          <code>~/Sites/.fassistant-signing/fassistant-click.jks</code>, same RSA 4096 with a
+          generated password. Installed copies use the signature to decide an update is genuine, so
+          one key signing two apps means one compromised key costs both. The sibling's changelog
+          already records what replacing a key costs — a forced uninstall — which is a good reason
+          to get it right on the first release.</p>
+      </div>
+
+      <div class="q">
+        <h3>3. How much does the panel need to do on its own?</h3>
+        <p>The original puts nearly everything on the floating panel, so you rarely open the app
+          proper. That is more overlay UI, and overlay UI is the fiddliest thing here — it has to
+          stay usable while sitting on top of the app you care about.</p>
+        <p class="rec"><b>Recommend:</b> panel does start, stop, pause, add point, and pick a saved
+          script. Editing timings, naming and managing scripts, and settings live in the real
+          activity. Move things onto the panel later if reaching for the app turns out to be
+          annoying in practice.</p>
+      </div>
+
+      <div class="q">
+        <h3>4. Which phones are the target?</h3>
+        <p>Milestone 0's answers differ by Android version, and gate 3 only bites on 13 and later.
+          The sibling was developed against a OnePlus 5T on Android 10.</p>
+        <p class="rec"><b>Recommend:</b> the OnePlus 5T plus one phone on Android 13 or later. Two
+          phones on opposite sides of the restricted-settings change is what makes the probe worth
+          running; one phone on either side leaves half the answers unknown.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+
+  <section>
+    <h2>Assumptions</h2>
+
+    <p>Decided rather than asked. Any of these is cheap to overturn now and expensive later.</p>
+
+    <ul>
+      <li><b>Nothing comes out of the original APK.</b> The feature list is the only thing taken
+        from Click Assistant — no decompiled code, no extracted assets, no icon, no name, no screen
+        layouts. A functional equivalent written from scratch is ordinary work; lifting the
+        implementation or the branding is not, and there is no reason to do it when the whole app is
+        one platform API.</li>
+      <li><b>Sideloaded onto your own phones, with adb available.</b> This shapes the permission
+        story completely. A Play Store build would need a different answer to gate 3 and a policy
+        justification for the accessibility grant.</li>
+      <li><b>Two independent APKs on the phone.</b> Its own repo, app id, key and release, per the
+        layout decision. No shared code with <code>fassistant-android</code> — the conventions are
+        copied, the source is not, because a shared library between two repos is a third thing to
+        maintain for two files' worth of reuse.</li>
+      <li><b>English only</b>, all user-facing text in <code>strings.xml</code>, same as the
+        sibling.</li>
+      <li><b>No analytics, no network</b> beyond the single self-update URL. The
+        <code>INTERNET</code> permission exists for that and nothing else.</li>
+    </ul>
+
+    <details>
+      <summary>What was verified, and what was not</summary>
+      <p>Worth being explicit, since the sibling repo's own changelog makes a point of separating
+        measured facts from documented ones.</p>
+      <div class="scroller">
+        <table>
+          <thead><tr><th>Claim</th><th>Basis</th></tr></thead>
+          <tbody>
+            <tr><td>Synthetic touch on an unrooted phone means <code>dispatchGesture</code> from an
+              accessibility service, API&nbsp;24+</td><td><span class="pill p-check">Android API reference</span></td></tr>
+            <tr><td>Continued strokes — <code>willContinue</code>, <code>continueStroke()</code> —
+              are API&nbsp;26</td><td><span class="pill p-check">Android API reference</span></td></tr>
+            <tr><td>Android 13+ blocks accessibility for sideloaded apps behind
+              <em>Allow restricted settings</em>, keyed on install source</td><td><span class="pill p-check">multiple independent write-ups</span></td></tr>
+            <tr><td>Writing <code>enabled_accessibility_services</code> over adb enables a service
+              directly</td><td><span class="pill p-check">the documented adb route, used by other tools</span></td></tr>
+            <tr><td>Android 15/16 refuse to install below targetSdk 24; 25 clears it</td><td><span class="pill p-check">recorded in fassistant-android's own README</span></td></tr>
+            <tr><td>Click Assistant's feature set: taps, curved swipes, pinch, multi-finger,
+              recording, saved scripts, countdown, adjustable panel</td><td><span class="pill p-check">its store listing</span></td></tr>
+            <tr><td>The exact values of the stroke-count and duration ceilings</td><td><span class="pill p-probe">read at runtime instead of assumed</span></td></tr>
+            <tr><td>A targetSdk 25 accessibility service is offered on Android 13+</td><td><span class="pill p-probe">M0 question 1</span></td></tr>
+            <tr><td>A dispatched tap is eaten by our own touchable overlay</td><td><span class="pill p-probe">M0 question 4 — reasoned, not measured</span></td></tr>
+            <tr><td>Any non-root way to observe another app's touches without swallowing them</td><td><span class="pill p-risk">not found; may not exist</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </details>
+  </section>
+
+  <footer class="end">
+    <p>fassistant-click &middot; plan at <code>docs/fassistant-click-plan.html</code> &middot;
+      repo initialised, nothing built. Sibling: <code>~/Sites/fassistant-android</code>.</p>
+  </footer>
+
+</div>

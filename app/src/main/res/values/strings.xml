@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">fassistant-click</string>
+
+    <string name="service_description">Sends the taps and swipes you have set up. fassistant-click never reads the screen and never looks at what you do — the accessibility permission is simply the only way Android lets an app deliver a touch.</string>
+    <string name="service_summary">Delivers the taps and swipes you set up</string>
+
+    <!-- Main screen -->
+    <string name="main_permissions">Permissions</string>
+    <string name="main_gate_overlay">Draw over other apps</string>
+    <string name="main_gate_overlay_why">Needed for the floating panel and the tap points</string>
+    <string name="main_gate_service">Accessibility service</string>
+    <string name="main_gate_service_why">The only way to send a touch without root</string>
+    <string name="gate_on">On</string>
+    <string name="gate_off">Off</string>
+    <string name="gate_half">On, not connected</string>
+    <string name="main_grant_overlay">Allow drawing over other apps</string>
+    <string name="main_grant_service">Open accessibility settings</string>
+    <string name="main_restricted_hint">On Android 13 and later this app is greyed out in the accessibility list until you allow it: App info, then the three-dot menu, then Allow restricted settings. Running tools/setup-phone.sh over adb avoids that step entirely.</string>
+
+    <string name="main_panel">Panel</string>
+    <string name="main_show_panel">Show the panel</string>
+    <string name="main_hide_panel">Hide the panel</string>
+    <string name="main_panel_blocked">Both permissions have to be on before the panel can appear.</string>
+
+    <string name="main_script">Script</string>
+    <string name="main_loaded">Loaded: %1$s</string>
+    <string name="main_loaded_none">No script loaded</string>
+    <string name="main_manage_scripts">Manage scripts</string>
+
+    <string name="main_phone">This phone</string>
+    <string name="main_caps">Allows %1$d strokes in one gesture, lasting up to %2$d ms.</string>
+    <string name="main_settings">Panel size and opacity</string>
+    <string name="main_updates">Updates</string>
+    <string name="main_version">Version %1$s (%2$d)</string>
+
+    <!-- Scripts -->
+    <string name="scripts_title">Scripts</string>
+    <string name="scripts_new">New script</string>
+    <string name="scripts_empty">No scripts yet. Make one, then place its points on the screen.</string>
+    <string name="scripts_load">Load</string>
+    <string name="scripts_loaded">Loaded</string>
+    <string name="scripts_edit">Edit</string>
+    <string name="scripts_rename">Rename</string>
+    <string name="scripts_duplicate">Duplicate</string>
+    <string name="scripts_delete_confirm">Delete \"%1$s\"?</string>
+    <string name="scripts_name_hint">Script name</string>
+    <string name="scripts_default_name">Script %1$d</string>
+    <string name="scripts_copy_name">%1$s copy</string>
+
+    <!-- Editor -->
+    <string name="editor_steps">Steps</string>
+    <string name="editor_add_step">Add a step</string>
+    <string name="editor_empty">No steps yet. Add one, then place it on the screen.</string>
+    <string name="editor_run">Run</string>
+    <string name="editor_repeats">Repeats</string>
+    <string name="editor_repeats_forever">Forever</string>
+    <string name="editor_repeats_hint">Number of passes, or 0 for forever</string>
+    <string name="editor_countdown">Countdown before the first gesture, in ms</string>
+    <string name="editor_step_line">%1$d. %2$s</string>
+    <string name="editor_step_detail">%1$d ms gesture, then wait %2$d ms</string>
+    <string name="editor_step_placed">Placed at %1$s</string>
+    <string name="editor_step_unplaced">Not placed yet</string>
+    <string name="editor_up">Up</string>
+    <string name="editor_down">Down</string>
+
+    <!-- Gesture kinds -->
+    <string name="kind_tap">Tap</string>
+    <string name="kind_swipe">Swipe</string>
+    <string name="kind_curve">Curved swipe</string>
+    <string name="kind_pinch_in">Pinch in</string>
+    <string name="kind_pinch_out">Pinch out</string>
+    <string name="kind_multi_tap">Taps at once</string>
+
+    <!-- Step editor -->
+    <string name="step_title">Step %1$d</string>
+    <string name="step_kind">Gesture</string>
+    <string name="step_duration">How long the gesture takes, in ms</string>
+    <string name="step_duration_tap">How long the finger stays down, in ms</string>
+    <string name="step_delay">Wait after this step, in ms</string>
+    <string name="step_fingers">Fingers</string>
+    <string name="step_points">Points</string>
+    <string name="step_place">Place points on screen</string>
+    <string name="step_place_blocked">Turn on both permissions first — the panel and the points are overlay windows.</string>
+    <string name="step_delete">Delete this step</string>
+
+    <!-- Placing points -->
+    <string name="capture_hint">Tap point %1$d of %2$d</string>
+    <string name="capture_sub">Switch to the app you want to automate, then tap where the gesture belongs.</string>
+    <string name="capture_cancel">Cancel</string>
+    <string name="capture_busy">Already placing points.</string>
+
+    <!-- Panel -->
+    <string name="panel_start">Start</string>
+    <string name="panel_stop">Stop</string>
+    <string name="panel_pause">Pause</string>
+    <string name="panel_resume">Resume</string>
+    <string name="panel_add_tap">+ Tap</string>
+    <string name="panel_app">App</string>
+    <string name="panel_hide">Hide</string>
+    <string name="panel_idle">%1$s · %2$s</string>
+    <string name="panel_no_script">No script loaded</string>
+    <string name="panel_countdown">Starting in %1$d</string>
+    <string name="panel_running">Pass %1$d of %2$d · step %3$d</string>
+    <string name="panel_running_forever">Pass %1$d · step %2$d</string>
+    <string name="panel_paused">Paused at step %1$d</string>
+
+    <!-- Refusals and outcomes -->
+    <string name="run_no_script">Load a script first.</string>
+    <string name="run_no_steps">This script has no steps yet.</string>
+    <string name="run_no_points">Step %1$d has not been placed on the screen yet.</string>
+    <string name="run_under_panel">Step %1$d sits under the panel. Drag the panel out of the way first.</string>
+    <string name="run_too_many_strokes">Step %1$d needs %2$d fingers, and this phone allows %3$d.</string>
+    <string name="run_service_off">Turn the accessibility service on first.</string>
+    <string name="run_rejected">Android refused the gesture at step %1$d, so the run has stopped.</string>
+    <string name="run_finished">Finished.</string>
+    <string name="run_stopped">Stopped.</string>
+    <string name="run_pause_pending">Pausing after this gesture.</string>
+
+    <!-- Notification -->
+    <string name="notif_channel">Runs</string>
+    <string name="notif_running">%1$s is running</string>
+    <string name="notif_running_sub">Tap Stop to end the run</string>
+    <string name="notif_stop">Stop</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Panel</string>
+    <string name="settings_panel_size">Panel size</string>
+    <string name="settings_panel_opacity">Panel opacity</string>
+    <string name="settings_marker_size">Tap point size</string>
+    <string name="settings_percent">%1$d%%</string>
+    <string name="settings_reset">Reset to defaults</string>
+
+    <!-- Updates -->
+    <string name="update_title">Updates</string>
+    <string name="update_installed">Installed: %1$s (%2$d)</string>
+    <string name="update_off">Self-update is switched off in this build. Set fclick.updateUrl in local.properties to turn it on.</string>
+    <string name="update_source">Where it looks</string>
+    <string name="update_check">Check now</string>
+    <string name="update_checking">Checking…</string>
+    <string name="update_current">Up to date.</string>
+    <string name="update_available">%1$s (%2$d) is available.</string>
+    <string name="update_failed">Could not check: %1$s</string>
+    <string name="update_install">Download and install</string>
+    <string name="update_downloading">Downloading…</string>
+    <string name="update_checksum_failed">The download does not match the checksum in the manifest.</string>
+    <string name="update_signature_failed">That APK is signed by a different key, so Android will not let it update this app.</string>
+    <string name="update_handing_over">Handing it to the installer…</string>
+    <string name="update_notes">What changed</string>
+    <string name="update_url_hint">Manifest URL</string>
+    <string name="update_unknown_sources">Android needs "Install unknown apps" for fassistant-click before it can install an update.</string>
+    <string name="update_allow_unknown_sources">Allow installing apps</string>
+
+    <!-- Shared -->
+    <string name="common_cancel">Cancel</string>
+    <string name="common_save">Save</string>
+    <string name="common_delete">Delete</string>
+    <!-- Counts that can legitimately be one. The rest of the %d strings in this file are
+         either always plural (stroke limits) or not counts at all ("Step 3 sits under..."). -->
+    <plurals name="scripts_step_count">
+        <item quantity="one">%1$d step</item>
+        <item quantity="other">%1$d steps</item>
+    </plurals>
+    <plurals name="step_place_needs">
+        <item quantity="one">%1$s needs %2$d point on the screen.</item>
+        <item quantity="other">%1$s needs %2$d points on the screen.</item>
+    </plurals>
+    <plurals name="capture_saved">
+        <item quantity="one">Placed %1$d point.</item>
+        <item quantity="other">Placed %1$d points.</item>
+    </plurals>
+</resources>

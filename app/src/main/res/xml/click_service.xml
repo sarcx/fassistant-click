@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- No accessibilityEventTypes on purpose: the app never reads the screen, it only writes
+     touches. canPerformGestures is the one line that matters. -->
+<accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
+    android:accessibilityFeedbackType="feedbackGeneric"
+    android:accessibilityFlags="flagDefault"
+    android:canPerformGestures="true"
+    android:description="@string/service_description"
+    android:notificationTimeout="100"
+    android:summary="@string/service_summary" />

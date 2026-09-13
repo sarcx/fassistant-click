@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="badge_good">#0C6355</color>
+    <color name="badge_warn">#8A5A00</color>
+    <color name="badge_bad">#98301F</color>
+
+    <color name="marker_tap">#E0342C</color>
+    <color name="marker_from">#1668C4</color>
+    <color name="marker_to">#0C7A5A</color>
+    <color name="marker_control">#8A5A00</color>
+</resources>
