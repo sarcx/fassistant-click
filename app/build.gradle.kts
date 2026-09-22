@@ -103,12 +103,17 @@ kotlin {
 /**
  * Produces everything a release needs: the APK under a versioned name for humans, a copy under a
  * stable name so an update URL never has to change, and the manifest the app polls.
+ *
+ * packageName and label are in the manifest because the catalogue reads every app's manifest and
+ * cannot say "installed 0.1.0" without knowing which package on the phone this repository
+ * corresponds to.
  */
 tasks.register("dist") {
     dependsOn("assembleRelease")
     val releaseOutputs = layout.buildDirectory.dir("outputs/apk/release")
     val distDir = rootProject.layout.projectDirectory.dir("dist")
     val changelog = rootProject.file("CHANGELOG.md")
+    val applicationId = android.defaultConfig.applicationId
 
     doLast {
         val built = releaseOutputs.get().asFile.listFiles { candidate -> candidate.extension == "apk" }
@@ -129,6 +134,8 @@ tasks.register("dist") {
               "versionName": "$appVersionName",
               "apkUrl": "fassistant-click.apk",
               "sha256": "$digest",
+              "packageName": "$applicationId",
+              "label": "Fassistant Click",
               "notes": "${jsonEscape(releaseNotes(changelog))}"
             }
             """.trimIndent() + "\n"

@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.1.1
+
+**This release is signed with a different key from 0.1.0, so it cannot replace it in place.** If
+0.1.0 is on a phone, uninstall it first — and uninstalling deletes the saved scripts, so copy out
+anything worth keeping before you do.
+
+0.1.0 was signed with a key belonging to this app alone. The new catalogue app refuses any download
+whose signing certificate does not match its own, which is how it tells a real Fassistant release
+from anything else sitting at that address, so an app on its own key could be listed but never
+installed from there. Fassistant and the catalogue already share one key; this app now uses it too.
+Done at 0.1.1, while one release exists and almost no phone has it, because the same change made
+later costs the same uninstall on every phone.
+
+The published release manifest also gains two fields: the package this repository installs, and the
+name to show for it. The catalogue builds its list from the manifest of every Fassistant app, and
+without the package name a row could only ever say "here is an app", never whether it is already on
+the phone and at which version.
+
 ## 0.1.0
 
 First build. Everything the plan called for except gesture recording, which was dropped on
