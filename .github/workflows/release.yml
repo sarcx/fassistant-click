@@ -34,7 +34,9 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - uses: android-actions/setup-android@v3
+      # v4 or newer is required: the action used to install the SDK's "tools" package by
+      # default, Google removed it from the repository, and v3 fails outright looking for it.
+      - uses: android-actions/setup-android@v4
 
       - name: Install the SDK pieces this build needs
         run: sdkmanager --install "platforms;android-36" "build-tools;${BUILD_TOOLS}"
