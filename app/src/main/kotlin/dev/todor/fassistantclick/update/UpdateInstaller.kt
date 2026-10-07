@@ -1,9 +1,7 @@
 package dev.todor.fassistantclick.update
 
-import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageInstaller
 import android.content.pm.PackageManager
 import android.content.pm.Signature
 import java.io.File
@@ -66,26 +64,20 @@ internal object UpdateInstaller {
         return fingerprints(candidate) == fingerprints(running)
     }
 
+    /**
+     * Opens Android's own install screen on the APK, which asks the user and does the install.
+     *
+     * Not a PackageInstaller session, although that is the newer route. Xiaomi's Android, with its
+     * default "MIUI optimization" on, refuses sessions from ordinary apps with
+     * "INSTALL_FAILED_INTERNAL_ERROR: Permission Denied", and the only cure on the phone is a
+     * developer setting. The install screen is allowed there, and works the same everywhere else.
+     * It reads the APK through [UpdateProvider].
+     */
     fun handOver(context: Context, apk: File) {
-        val installer = context.packageManager.packageInstaller
-        val session = installer.createSession(
-            PackageInstaller.SessionParams(PackageInstaller.SessionParams.MODE_FULL_INSTALL)
-        )
-
-        installer.openSession(session).use { open ->
-            open.openWrite("fassistant-click", 0, apk.length()).use { out ->
-                apk.inputStream().use { it.copyTo(out) }
-                open.fsync(out)
-            }
-            // Mutable on purpose: the installer fills this in with its own status extras.
-            val pending = PendingIntent.getBroadcast(
-                context,
-                session,
-                Intent(context, InstallResultReceiver::class.java),
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE,
-            )
-            open.commit(pending.intentSender)
-        }
+        val install = Intent(Intent.ACTION_INSTALL_PACKAGE)
+            .setDataAndType(UpdateProvider.uriFor(context, apk), UpdateProvider.MIME_TYPE)
+            .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        context.startActivity(install)
     }
 
     private fun fingerprints(signatures: Array<Signature>): Set<String> =

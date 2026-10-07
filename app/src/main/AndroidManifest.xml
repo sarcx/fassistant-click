@@ -74,9 +74,13 @@
             android:name=".StopReceiver"
             android:exported="false" />
 
-        <receiver
-            android:name=".update.InstallResultReceiver"
-            android:exported="false" />
+        <!-- Lets Android's install screen read a downloaded update. Not exported: the install
+             intent grants read access to that one file and nothing else. -->
+        <provider
+            android:name=".update.UpdateProvider"
+            android:authorities="${applicationId}.updates"
+            android:exported="false"
+            android:grantUriPermissions="true" />
 
     </application>
 
