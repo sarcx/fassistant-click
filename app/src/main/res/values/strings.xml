@@ -148,8 +148,6 @@
     <string name="update_handing_over">Handing it to the installer…</string>
     <string name="update_notes">What changed</string>
     <string name="update_url_hint">Manifest URL</string>
-    <string name="update_unknown_sources">Android needs "Install unknown apps" for fassistant-click before it can install an update.</string>
-    <string name="update_allow_unknown_sources">Allow installing apps</string>
 
     <!-- Shared -->
     <string name="common_cancel">Cancel</string>

@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.1.2
+
+Fixes self-update never offering to install on Android 8 and later. The update screen said Android
+needed "Install unknown apps" for this app, and kept saying so after it had been allowed.
+
+Before offering the install, the app asked Android whether it was allowed to install apps. For an app
+that targets Android 7.1 or older, as this one deliberately does, Android answers no to that
+question whatever the setting says. The app no longer asks. The install button is always there, and
+Android's own installer checks the real setting: if it is off, it says so, links to it and then
+carries on with the install.
+
 ## 0.1.1
 
 **This release is signed with a different key from 0.1.0, so it cannot replace it in place.** If

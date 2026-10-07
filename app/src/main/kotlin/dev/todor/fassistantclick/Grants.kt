@@ -4,11 +4,10 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.provider.Settings
 
 /**
- * The three gates that stand between an install and a working tap, and the deep link to each.
+ * The two gates that stand between an install and a working tap, and the deep link to each.
  *
  * The accessibility gate has two answers rather than one: Android's list can say the service is
  * enabled while the service itself has not connected, and telling the difference is the only way
@@ -34,21 +33,6 @@ object Grants {
     )
 
     fun serviceIntent() = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
-
-    fun canInstallPackages(context: Context): Boolean {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return true
-        return context.packageManager.canRequestPackageInstalls()
-    }
-
-    /**
-     * Only reached when [canInstallPackages] said no, which cannot happen below Android 8. The
-     * action is a compile-time string, so it is in the APK whatever the phone runs.
-     */
-    @Suppress("InlinedApi")
-    fun installPackagesIntent(context: Context) = Intent(
-        Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES,
-        Uri.parse("package:${context.packageName}"),
-    )
 
     /**
      * What Android's own list says, which is not the same as the service being alive — a phone can

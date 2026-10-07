@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.LinearLayout
 import dev.todor.fassistantclick.BuildConfig
-import dev.todor.fassistantclick.Grants
 import dev.todor.fassistantclick.R
 import dev.todor.fassistantclick.update.UpdateInstaller
 import dev.todor.fassistantclick.update.UpdateManifest
@@ -62,16 +61,11 @@ class UpdateActivity : SubScreen() {
                 content.addView(heading(getString(R.string.update_notes)))
                 content.addView(caption(newer.notes))
             }
-            if (Grants.canInstallPackages(this)) {
-                content.addView(button(getString(R.string.update_install)) { install(newer) })
-            } else {
-                content.addView(caption(getString(R.string.update_unknown_sources)))
-                content.addView(
-                    button(getString(R.string.update_allow_unknown_sources)) {
-                        startActivity(Grants.installPackagesIntent(this))
-                    }
-                )
-            }
+            // No check first for permission to install apps. On Android 8 and later,
+            // canRequestPackageInstalls() answers false for any app targeting below 26 — this one
+            // targets 25 — however the setting is set. Android's own confirmation checks the real
+            // setting, links to it when it is off, and then carries on with the install.
+            content.addView(button(getString(R.string.update_install)) { install(newer) })
         }
 
         setContentView(scrolling(content))
